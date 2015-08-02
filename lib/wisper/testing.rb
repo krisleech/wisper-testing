@@ -14,7 +14,7 @@ module Wisper
       Wisper.configuration.broadcasters.keys.each do |key, broadcaster|
         Wisper.configuration.broadcasters[key] = FakeBroadcaster.new
       end
-      enable
+      is_enabled
       self
     end
 
@@ -28,7 +28,7 @@ module Wisper
       Wisper.configuration.broadcasters.keys.each do |key, broadcaster|
         Wisper.configuration.broadcasters[key] = InlineBroadcaster.new
       end
-      enable
+      is_enabled
       self
     end
 
@@ -37,13 +37,13 @@ module Wisper
     # @return self
     #
     def self.restore!
-      if original_broadcasters?
+      if enabled?
         Wisper.configuration.broadcasters.clear
         original_broadcasters.each do |key, broadcaster|
           Wisper.configuration.broadcasters[key] = broadcaster
         end
+        is_not_enabled
       end
-      disable
       self
     end
 
@@ -70,11 +70,11 @@ module Wisper
 
     private
 
-    def self.enable
+    def self.is_enabled
       @enabled = true
     end
 
-    def self.disable
+    def self.is_not_enabled
       @enabled = false
     end
 
