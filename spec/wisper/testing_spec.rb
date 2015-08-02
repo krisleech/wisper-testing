@@ -5,8 +5,9 @@ describe Wisper::Testing do
     expect(Wisper::Testing::VERSION).not_to be nil
   end
 
-  before do
+  before(:each) do
     Wisper.configuration.broadcasters.clear
+    described_class._forget
   end
 
   let(:publisher_class) { Class.new { include Wisper::Publisher } }
@@ -38,6 +39,10 @@ describe Wisper::Testing do
       expect(Wisper.configuration.broadcasters[:default]).to an_instance_of(Wisper::Testing::FakeBroadcaster)
       expect(Wisper.configuration.broadcasters[:async]).to an_instance_of(Wisper::Testing::FakeBroadcaster)
     end
+
+    it 'returns self' do
+      expect(Wisper::Testing.fake!).to eq Wisper::Testing
+    end
   end
 
   describe '#inline!' do
@@ -48,7 +53,22 @@ describe Wisper::Testing do
 
   describe '#restore!' do
     it 'restores all broadcasters' do
+      default_broadcaster = double
+      async_broadcaster = double
 
+      Wisper.configuration.broadcaster(:default, default_broadcaster)
+      Wisper.configuration.broadcaster(:async,   async_broadcaster)
+
+      Wisper::Testing.fake!
+
+      Wisper::Testing.restore!
+
+      expect(Wisper.configuration.broadcasters[:default]).to eq default_broadcaster
+      expect(Wisper.configuration.broadcasters[:async]).to eq async_broadcaster
+    end
+
+    it 'returns self' do
+      expect(Wisper::Testing.restore!).to eq Wisper::Testing
     end
   end
 
@@ -71,5 +91,4 @@ describe Wisper::Testing do
   describe 'when inline' do
 
   end
-
 end
