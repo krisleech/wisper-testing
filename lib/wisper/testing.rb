@@ -35,9 +35,11 @@ module Wisper
     # @return self
     #
     def self.restore!
-      Wisper.configuration.broadcasters.clear
-      original_broadcasters.each do |key, broadcaster|
-        Wisper.configuration.broadcasters[key] = broadcaster
+      if original_broadcasters?
+        Wisper.configuration.broadcasters.clear
+        original_broadcasters.each do |key, broadcaster|
+          Wisper.configuration.broadcasters[key] = broadcaster
+        end
       end
       self
     end
@@ -49,17 +51,22 @@ module Wisper
     # @api private
     #
     def self._forget
-      original_broadcasters.clear
+      return unless original_broadcasters?
+      @original_broadcasters = nil
     end
 
     private
 
     def self.original_broadcasters
-      @original_broadcasters ||= []
+      @original_broadcasters
     end
 
     def self.store_original_broadcasters
       @original_broadcasters = Wisper.configuration.broadcasters.to_h.dup
+    end
+
+    def self.original_broadcasters?
+      !!original_broadcasters
     end
   end
 end

@@ -92,6 +92,21 @@ describe Wisper::Testing do
       expect(Wisper.configuration.broadcasters[:async]).to eq async_broadcaster
     end
 
+    describe 'when fake! or inline! have never been called' do
+      it 'is a no-op' do
+        default_broadcaster = double
+        async_broadcaster = double
+
+        Wisper.configuration.broadcaster(:default, default_broadcaster)
+        Wisper.configuration.broadcaster(:async,   async_broadcaster)
+
+        Wisper::Testing.restore!
+
+        expect(Wisper.configuration.broadcasters[:default]).to eq default_broadcaster
+        expect(Wisper.configuration.broadcasters[:async]).to eq async_broadcaster
+      end
+    end
+
     it 'returns self' do
       expect(Wisper::Testing.restore!).to eq Wisper::Testing
     end
@@ -99,7 +114,9 @@ describe Wisper::Testing do
 
   describe '#faking?' do
     describe 'when faking' do
+      it 'returns true' do
 
+      end
     end
 
     describe 'when not faking' do
