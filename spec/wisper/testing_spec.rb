@@ -11,7 +11,7 @@ describe Wisper::Testing do
   end
 
   let(:publisher_class) { Class.new { include Wisper::Publisher } }
-  let(:publisher) { publisher_class.new }
+  let(:publisher)  { publisher_class.new }
   let(:subscriber) { double('Subscriber') }
 
   describe '#fake!' do
@@ -112,25 +112,39 @@ describe Wisper::Testing do
     end
   end
 
-  describe '#faking?' do
+  describe '#enabled?' do
+    it 'returns false' do
+      expect(described_class.enabled?).to eq false
+    end
+
     describe 'when faking' do
       it 'returns true' do
+        described_class.fake!
+        expect(described_class.enabled?).to eq true
+      end
 
+      describe 'and then restored' do
+        it 'returns false' do
+          described_class.fake!
+          described_class.restore!
+          expect(described_class.enabled?).to eq false
+        end
       end
     end
 
-    describe 'when not faking' do
+    describe 'when inline' do
+      it 'returns true' do
+        described_class.inline!
+        expect(described_class.enabled?).to eq true
+      end
 
+      describe 'and then restored' do
+        it 'returns false' do
+          described_class.inline!
+          described_class.restore!
+          expect(described_class.enabled?).to eq false
+        end
+      end
     end
-  end
-
-  describe 'when faking' do
-    before { Testing::Wisper.fake! }
-
-
-  end
-
-  describe 'when inline' do
-
   end
 end

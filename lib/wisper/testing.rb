@@ -14,6 +14,7 @@ module Wisper
       Wisper.configuration.broadcasters.keys.each do |key, broadcaster|
         Wisper.configuration.broadcasters[key] = FakeBroadcaster.new
       end
+      enable
       self
     end
 
@@ -27,6 +28,7 @@ module Wisper
       Wisper.configuration.broadcasters.keys.each do |key, broadcaster|
         Wisper.configuration.broadcasters[key] = InlineBroadcaster.new
       end
+      enable
       self
     end
 
@@ -41,7 +43,17 @@ module Wisper
           Wisper.configuration.broadcasters[key] = broadcaster
         end
       end
+      disable
       self
+    end
+
+    # Returns true when either fake! or inline! having been invoked and restore!
+    # has not subsequently been invoked.
+    #
+    # @return Boolean
+    #
+    def self.enabled?
+      !!@enabled
     end
 
     # Forget the original broadcaster configuration.
@@ -52,10 +64,19 @@ module Wisper
     #
     def self._forget
       return unless original_broadcasters?
+      @enabled = false
       @original_broadcasters = nil
     end
 
     private
+
+    def self.enable
+      @enabled = true
+    end
+
+    def self.disable
+      @enabled = false
+    end
 
     def self.original_broadcasters
       @original_broadcasters

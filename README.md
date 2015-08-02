@@ -40,11 +40,20 @@ end
 
 ### Restore
 
-Using `restore!` will turn off `fake!` and `inline!`. It is not nessesary to
-call this if you are using the block variations `fake` and `inline`.
+Using `restore!` will turn off `fake!` and `inline!` and restore the original
+configuration.
+
+It is not nessesary to call this if you are using the block variations 
+`fake` and `inline`.
 
 ```ruby
 Wisper::Testing.restore!
+```
+
+### Enabled
+
+```ruby
+Wisper::Testing.enabled? # => true/false
 ```
 
 ## Development
