@@ -1,5 +1,6 @@
 require "wisper/testing/version"
 require "wisper/testing/fake_broadcaster"
+require "wisper/testing/inline_broadcaster"
 
 module Wisper
   class Testing
@@ -12,6 +13,19 @@ module Wisper
       store_original_broadcasters
       Wisper.configuration.broadcasters.keys.each do |key, broadcaster|
         Wisper.configuration.broadcasters[key] = FakeBroadcaster.new
+      end
+      self
+    end
+
+    # Sets all broadcasters to InlineBroadcaster which broadcasts event
+    #  to the subscriber synchronously.
+    #
+    #  @return self
+    #
+    def self.inline!
+      store_original_broadcasters
+      Wisper.configuration.broadcasters.keys.each do |key, broadcaster|
+        Wisper.configuration.broadcasters[key] = InlineBroadcaster.new
       end
       self
     end

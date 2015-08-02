@@ -46,8 +46,33 @@ describe Wisper::Testing do
   end
 
   describe '#inline!' do
-    it 'uses default broadcaster for all events' do
+    it 'ensures all events are broadcast synchronously' do
+      Wisper.configuration.broadcaster(:default, double.as_null_object)
+      Wisper.configuration.broadcaster(:async,   double.as_null_object)
 
+      described_class.inline!
+
+      event_name = 'foobar'
+
+      publisher.subscribe(subscriber)
+
+      expect(subscriber).to receive(event_name)
+
+      publisher.send(:broadcast, event_name)
+    end
+
+    it 'uses default broadcaster for all events' do
+      Wisper.configuration.broadcaster(:default, double)
+      Wisper.configuration.broadcaster(:async,   double)
+
+      described_class.inline!
+
+      expect(Wisper.configuration.broadcasters[:default]).to an_instance_of(Wisper::Testing::InlineBroadcaster)
+      expect(Wisper.configuration.broadcasters[:async]).to an_instance_of(Wisper::Testing::InlineBroadcaster)
+    end
+
+    it 'returns self' do
+      expect(Wisper::Testing.inline!).to eq Wisper::Testing
     end
   end
 
