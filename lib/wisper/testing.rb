@@ -18,6 +18,18 @@ module Wisper
       self
     end
 
+    # Sets all broadcasters to FakeBroadcaster which does not broadcast any
+    # events to the subscriber, for the duration of the block
+    #
+    # @return self
+    #
+    def self.fake
+      fake!
+      yield
+      restore!
+      self
+    end
+
     # Sets all broadcasters to InlineBroadcaster which broadcasts event
     #  to the subscriber synchronously.
     #
