@@ -45,6 +45,20 @@ describe Wisper::Testing do
     end
   end
 
+  describe "#fake" do
+    it "#fake!s for the duration of the block only" do
+      Wisper.configuration.broadcaster(:default, Wisper::Broadcasters::SendBroadcaster.new)
+      publisher.subscribe(subscriber)
+      event_name = 'foobar'
+
+      blk = -> { publisher.send(:broadcast, event_name) }
+
+      expect(subscriber).not_to receive(event_name)
+      expect { |blk| described_class.fake(&blk) }.to yield_with_no_args
+      expect(described_class).to_not be_enabled
+    end
+  end
+
   describe '#inline!' do
     it 'ensures all events are broadcast synchronously' do
       Wisper.configuration.broadcaster(:default, double.as_null_object)
