@@ -37,7 +37,7 @@ module Wisper
     #
     def self.inline!
       store_original_broadcasters
-      Wisper.configuration.broadcasters.keys.each do |key, broadcaster|
+      Wisper.configuration.broadcasters.keys.each do |key|
         Wisper.configuration.broadcasters[key] = InlineBroadcaster.new
       end
       is_enabled
@@ -95,6 +95,9 @@ module Wisper
     end
 
     def self.store_original_broadcasters
+      unless Wisper.configuration.broadcasters.respond_to?(:to_h)
+        Wisper.configuration.broadcasters.singleton_class.instance_exec { def_delegators :@data, :to_h, :keys }
+      end
       @original_broadcasters = Wisper.configuration.broadcasters.to_h.dup
     end
 
