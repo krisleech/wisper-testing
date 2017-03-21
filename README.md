@@ -1,5 +1,7 @@
 # Wisper::Testing
 
+[![Build Status](https://travis-ci.org/krisleech/wisper-testing.svg?branch=master)](https://travis-ci.org/krisleech/wisper-testing)
+
 Helpers for testing Wisper publisher/subscribers.
 
 ## Installation
