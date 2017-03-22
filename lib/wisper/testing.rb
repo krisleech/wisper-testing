@@ -43,6 +43,18 @@ module Wisper
       is_enabled
       self
     end
+    
+    # Sets all broadcasters to InlineBroadcaster which broadcasts event
+    #  to the subscriber synchronously.
+    #
+    #  @return self
+    #
+    def self.inline
+      inline!
+      yield
+      restore!
+      self
+    end
 
     # Restores the original broadcasters configuration
     #
